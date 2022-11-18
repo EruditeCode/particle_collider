@@ -14,8 +14,18 @@ class Particle:
 	def guidance(self, box, particles):
 		# Update direction to maintain the particle within the boundary box.
 		self.boundary_update_dir(box)
-		# Update direction if the particle has collided with another particle.
-		self.collision_update_dir(particles)
+
+		# Update direction if any collision has occurred.
+		for particle in particles:
+			if particle.pos != self.pos and self.collision_check(particle):
+				if self.collision_status == False:
+					self.collision_status = True
+					self.collision_update_dir(particle)
+					break
+				else:
+					break
+		else:
+			self.collision_status = False
 
 	def boundary_update_dir(self, box):
 		# box = [x_min, x_max, y_min, y_max]
@@ -28,20 +38,18 @@ class Particle:
 		elif self.pos[1] >= box[3] - self.radius and self.dir[1] > 0:
 			self.dir = (self.dir[0], self.dir[1] * -1)
 
-	def collision_update_dir(self, particles):
-		for particle in particles:
-			if euclidean_distance(particle.pos, self.pos) <= self.radius + particle.radius and particle.pos != self.pos:
-				if self.collision_status == False:
-					self.collision_status == True
-					x = (self.pos[0] - particle.pos[0])
-					y = (self.pos[1] - particle.pos[1])
-					if abs(x) >= abs(y):
-						self.dir = ((x/abs(x)), (y/abs(x)))
-					else:
-						self.dir = ((x/abs(y)), (y/abs(y)))
-					break
+	def collision_update_dir(self, particle):
+		x = self.pos[0] - particle.pos[0]
+		y = self.pos[1] - particle.pos[1]
+		if abs(x) >= abs(y):
+			self.dir = (x/abs(x), y/abs(x))
 		else:
-			self.collision_status = False
+			self.dir = (x/abs(y), y/abs(y))
+
+	def collision_check(self, particle):
+		if euclidean_distance(particle.pos, self.pos) <= self.radius + particle.radius:
+			return True
+		return False
 
 	def update_pos(self):
 		self.pos = (self.pos[0] + self.dir[0] * self.speed, self.pos[1] + self.dir[1] * self.speed)
