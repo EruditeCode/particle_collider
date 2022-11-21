@@ -2,13 +2,14 @@
 
 import pygame
 from class_Particle import Particle
+from functions_geometric import euclidean_distance
 from random import randint
 from sys import exit
 
 def main():
 	# Initialising Pygame window, caption and clock.
 	pygame.init()
-	WIDTH, HEIGHT = 450, 450
+	WIDTH, HEIGHT = 1280, 650
 	screen = pygame.display.set_mode((WIDTH, HEIGHT))
 	pygame.display.set_caption("Particle Collider")
 	clock = pygame.time.Clock()
@@ -19,11 +20,11 @@ def main():
 
 	# Create the particles using the Particle class.
 	particles = []
-	for i in range(0, 5):
-		pos = (randint(50, 400), randint(50, 400))
-		speed = randint(4, 6)
-		radius = 10
-		particles.append(Particle(pos, (1, 1), speed, radius, "white"))
+	for i in range(0, 50):
+		pos = (randint(620, 660), randint(310, 340))
+		speed = randint(2, 4)
+		radius = 3
+		particles.append(Particle(pos, (1, 1), speed, radius, (255, 255, 255)))
 
 	while True:
 		for event in pygame.event.get():
@@ -36,9 +37,12 @@ def main():
 		# Draw lines between particles.
 		for particle in particles:
 			for point in particles:
-				pygame.draw.aaline(screen, "white", particle.pos, point.pos, 3)
+				distance = euclidean_distance(particle.pos, point.pos)
+				if distance < 225:
+					color = (255 - distance, 255 - distance, 255 - distance)
+					pygame.draw.aaline(screen, color, particle.pos, point.pos, 3)
 		
-
+		
 		# Draw the particles.
 		for particle in particles:
 			pygame.draw.circle(screen, particle.color, particle.pos, particle.radius)
