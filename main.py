@@ -19,12 +19,11 @@ def main():
 
 	# Create the particles using the Particle class.
 	particles = []
-	color = [(79, 187, 224), (255, 255, 255), (255, 111, 81)]
-	for i in range(0, 3):
+	for i in range(0, 5):
 		pos = (randint(50, 400), randint(50, 400))
 		speed = randint(4, 6)
-		radius = 30
-		particles.append(Particle(pos, (1, 1), speed, radius, color[i]))
+		radius = 10
+		particles.append(Particle(pos, (1, 1), speed, radius, "white"))
 
 	while True:
 		for event in pygame.event.get():
@@ -33,6 +32,12 @@ def main():
 				exit()
 
 		screen.blit(bg, (0, 0))
+
+		# Draw lines between particles.
+		for particle in particles:
+			for point in particles:
+				pygame.draw.aaline(screen, "white", particle.pos, point.pos, 3)
+		
 
 		# Draw the particles.
 		for particle in particles:
