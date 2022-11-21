@@ -21,6 +21,7 @@ class Particle:
 				if self.collision_status == False:
 					self.collision_status = True
 					self.collision_update_dir(particle)
+					self.radius_decrement()
 					break
 				else:
 					break
@@ -55,3 +56,9 @@ class Particle:
 		pos_x = self.pos[0] + self.dir[0] * self.speed
 		pos_y = self.pos[1] + self.dir[1] * self.speed
 		self.pos = (pos_x, pos_y)
+
+	def radius_decrement(self):
+		if self.radius > 5:
+			self.radius -= 1
+
+
